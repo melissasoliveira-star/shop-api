@@ -8,6 +8,7 @@ require("./db");
 
 const userRoutes = require("./routes/userRoutes"); // Importa as rotas de usuários
 const productRoutes = require("./routes/productRoutes"); // Importa as rotas de produtos
+const orderRoutes = require("./routes/orderRoutes"); // Importa as rotas de produtos
 
 app.use(express.json()); // Middleware para interpretar o corpo das requisições como JSON
 
@@ -16,6 +17,9 @@ app.use("/api/users", userRoutes);
 
 // prefixo /api/products
 app.use("/api/products", productRoutes);
+
+// prefixo /api/orders
+app.use("/api/orders", orderRoutes);
 
 // Inicia o servidor e exibe o endereço no console
 app.listen(port, () => {

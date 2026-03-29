@@ -106,7 +106,7 @@ router.delete("/:id", async (req, res) => {
           "Não é possível apagar: este produto possui pedidos registrados.",
       });
     }
-    console.error("Erro ao apagar usuário:", err);
+    console.error("Erro ao apagar produto:", err);
     res.status(500).send("Erro interno do servidor");
   }
 });
