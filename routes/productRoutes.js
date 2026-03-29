@@ -34,5 +34,53 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// POST /api/products/
+// Cria um produto e retorna o produto criado para o usuário
+// Responde com 500 se não puder criar
+router.post("/", async (req, res) => {
+  const { nome, preco, estoque } = req.body;
+  const descricao = req.body.descricao || null;
+
+  if (!nome || !preco || !estoque) {
+    return res
+      .status(400)
+      .json({ error: "Nome, preço e estoque são obrigatórios." });
+  }
+
+  try {
+    const product = await productRepo.createProduct({
+      nome,
+      descricao,
+      preco,
+      estoque,
+    });
+    return res.status(201).json(product);
+  } catch (err) {
+    console.error("Erro ao criar produto:", err);
+    res.status(500).send("Erro interno do servidor");
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  const { nome, descricao, preco, estoque } = req.body;
+
+  try {
+    const product = await productRepo.updateProduct(req.params.id, {
+      nome,
+      descricao,
+      preco,
+      estoque,
+    });
+
+    if (!product)
+      return res.status(404).json({ message: "Produto não encontrado" });
+
+    return res.json(product);
+  } catch (err) {
+    console.error("Erro ao atualizar produto:", err);
+    res.status(500).send("Erro interno do servidor");
+  }
+});
+
 // Exporta o roteador para ser utilizado na aplicação principal
 module.exports = router;

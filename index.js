@@ -7,11 +7,15 @@ const port = 3000; // Define a porta em que a API irá rodar
 require("./db");
 
 const userRoutes = require("./routes/userRoutes"); // Importa as rotas de usuários
+const productRoutes = require("./routes/productRoutes"); // Importa as rotas de produtos
 
 app.use(express.json()); // Middleware para interpretar o corpo das requisições como JSON
 
 // prefixo /api/users
 app.use("/api/users", userRoutes);
+
+// prefixo /api/products
+app.use("/api/products", productRoutes);
 
 // Inicia o servidor e exibe o endereço no console
 app.listen(port, () => {
