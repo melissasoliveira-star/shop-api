@@ -61,6 +61,10 @@ router.post("/", async (req, res) => {
   }
 });
 
+// PUT /api/products/:id
+// Atualiza os dados de um produto existente pelo seu ID
+// Apenas os campos enviados no corpo serão alterados (os demais mantêm o valor atual)
+// Responde com 404 se o produto não for encontrado
 router.put("/:id", async (req, res) => {
   const { nome, descricao, preco, estoque } = req.body;
 
@@ -78,6 +82,31 @@ router.put("/:id", async (req, res) => {
     return res.json(product);
   } catch (err) {
     console.error("Erro ao atualizar produto:", err);
+    res.status(500).send("Erro interno do servidor");
+  }
+});
+
+// DELETE /api/products/:id
+// Remove um produto pelo seu ID
+// Responde com 404 se o produto não for encontrado
+// Responde com 400 se o produto possuir pedidos vinculados (violação de chave estrangeira)
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleted = await productRepo.deleteProduct(req.params.id);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Produto não encontrado" });
+    }
+
+    return res.json({ message: "Produto removido", dados: deleted });
+  } catch (err) {
+    if (err.code === "23503") {
+      return res.status(400).json({
+        message:
+          "Não é possível apagar: este produto possui pedidos registrados.",
+      });
+    }
+    console.error("Erro ao apagar usuário:", err);
     res.status(500).send("Erro interno do servidor");
   }
 });

@@ -42,9 +42,19 @@ async function updateProduct(id, { nome, descricao, preco, estoque }) {
   return result.rows[0] || null;
 }
 
+async function deleteProduct(id) {
+  const result = await db.query(
+    "DELETE FROM produtos WHERE id = $1 RETURNING *;",
+    [id],
+  );
+
+  return result.rows[0] || null;
+}
+
 module.exports = {
   findAllProducts,
   findProductById,
   createProduct,
   updateProduct,
+  deleteProduct,
 };
