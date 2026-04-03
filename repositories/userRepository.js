@@ -1,8 +1,12 @@
 const db = require("../db"); // Importa a conexão com o banco de dados
 
 // Retorna todos os usuários ordenados por ID crescente
-async function findAllUsers() {
-  const result = await db.query("SELECT * FROM usuarios ORDER BY id ASC");
+async function findAllUsers({ page = 1, limit = 10 } = {}) {
+  const offset = (page - 1) * limit;
+  const result = await db.query(
+    "SELECT * FROM usuarios ORDER BY id ASC  LIMIT $1 OFFSET $2",
+    [limit, offset],
+  );
   return result.rows; // Retorna o array de usuários
 }
 

@@ -14,7 +14,10 @@ router.get("/", async (req, res) => {
       users = await userRepo.findUserByEmail(email);
       users = users ? [users] : [];
     } else {
-      users = await userRepo.findAllUsers();
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 5;
+
+      users = await userRepo.findAllUsers({ page, limit });
     }
     return res.json(users);
   } catch (err) {

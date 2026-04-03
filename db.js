@@ -11,12 +11,12 @@ app.use(express.json());
 
 // Configuração de conexão com PostgreSQL
 const db = new Pool({
-  user: "postgres",   // Usuário do banco de dados
-  host: "localhost",  // Endereço do servidor PostgreSQL
-  database: "store",  // Nome do banco de dados
-  password: "0509",   // Senha do usuário
-  port: 5432,         // Porta padrão do PostgreSQL
-  max: 10, // Máximo de 10 conexões simultâneas
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: Number(process.env.DB_PORT),
+  max: Number(process.env.DB_MAX),
 });
 
 // Conecta ao banco e exibe status no console

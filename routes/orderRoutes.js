@@ -11,10 +11,43 @@ const orderRepo = require("../repositories/orderRepository");
 // Retorna a lista de todos os pedidos cadastrados
 router.get("/", async (req, res) => {
   try {
-    const orders = await orderRepo.findAllOrders();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
+    const orders = await orderRepo.findAllOrders({ page, limit });
     return res.json(orders);
   } catch (err) {
     console.error("Erro ao buscar pedidos:", err);
+    res.status(500).send("Erro interno do servidor");
+  }
+});
+
+// GET /api/orders/user/:id
+// Retorna um pedido pelo ID do usuário (usuario_id)
+// Responde com 404 se o pedido não for encontrado
+router.get("/user/:id", async (req, res) => {
+  try {
+    const order = await orderRepo.findOrderByUsuarioId(req.params.id);
+    if (!order)
+      return res.status(404).json({ message: "Pedido não encontrado" });
+    return res.json(order);
+  } catch (err) {
+    console.error("Erro ao buscar pedido:", err);
+    res.status(500).send("Erro interno do servidor");
+  }
+});
+
+router.get("/:id/details", async (req, res) => {
+  try {
+    const orderDetails = await orderRepo.findOrderDetailsById(req.params.id);
+
+    if (!orderDetails) {
+      return res.status(404).json({ message: "Pedido não encontrado" });
+    }
+
+    return res.json(orderDetails);
+  } catch (err) {
+    console.error("Erro ao buscar detalhes do pedido:", err);
     res.status(500).send("Erro interno do servidor");
   }
 });

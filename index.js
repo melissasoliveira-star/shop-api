@@ -1,7 +1,9 @@
+require("dotenv").config();
+
 // index.js - Ponto de entrada da aplicação
 const express = require("express"); // Importa o framework Express
 const app = express(); // Cria a instância da aplicação
-const port = 3000; // Define a porta em que a API irá rodar
+const port = Number(process.env.PORT) || 3000; // Define a porta em que a API irá rodar
 
 // garante que o db.js conecta
 require("./db");

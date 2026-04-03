@@ -11,7 +11,17 @@ const productRepo = require("../repositories/productRepository");
 // Retorna a lista de todos os produtos cadastrados
 router.get("/", async (req, res) => {
   try {
-    const products = await productRepo.findAllProducts();
+    const { nome } = req.query;
+    let products;
+    if (nome) {
+      products = await productRepo.findProductByNome(nome);
+    } else {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 5;
+
+      products = await productRepo.findAllProducts({ page, limit });
+    }
+
     return res.json(products);
   } catch (err) {
     console.error("Erro ao buscar produtos:", err);

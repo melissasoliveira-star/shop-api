@@ -1,13 +1,25 @@
 const db = require("../db");
 
-async function findAllProducts() {
-  const result = await db.query("SELECT * FROM produtos ORDER BY id ASC");
+async function findAllProducts({ page = 1, limit = 10 } = {}) {
+  const offset = (page - 1) * limit;
+  const result = await db.query(
+    "SELECT * FROM produtos ORDER BY id ASC LIMIT $1 OFFSET $2",
+    [limit, offset],
+  );
   return result.rows;
 }
 
 async function findProductById(id) {
   const result = await db.query("SELECT * FROM produtos WHERE id = $1", [id]);
   return result.rows[0] || null;
+}
+
+async function findProductByNome(nome) {
+  const result = await db.query(
+    "SELECT * FROM produtos WHERE nome ILIKE $1 ORDER BY id ASC",
+    [`%${nome}%`],
+  );
+  return result.rows;
 }
 
 async function createProduct({ nome, descricao, preco, estoque }) {
@@ -54,6 +66,7 @@ async function deleteProduct(id) {
 module.exports = {
   findAllProducts,
   findProductById,
+  findProductByNome,
   createProduct,
   updateProduct,
   deleteProduct,
