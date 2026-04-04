@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router(); // Cria um roteador isolado do Express
 const userRepo = require("../repositories/userRepository"); // Importa o repositório de usuários
+const orderRepo = require("../repositories/orderRepository"); // Importa o repositório de pedidos, responsável pela comunicação com o banco de dados
 
 // GET /api/users?nome=João&email=x - Lista todos, ou filtra por nome e/ou email se informados
 router.get("/", async (req, res) => {
@@ -22,6 +23,21 @@ router.get("/", async (req, res) => {
     return res.json(users);
   } catch (err) {
     console.error("Erro ao buscar usuários:", err);
+    res.status(500).send("Erro interno do servidor");
+  }
+});
+
+// GET /api/users/:id/orders
+// Retorna um pedido pelo ID do usuário (usuario_id)
+// Responde com 404 se o pedido não for encontrado
+router.get("/:id/orders", async (req, res) => {
+  try {
+    const order = await orderRepo.findOrderByUsuarioId(req.params.id);
+    if (!order)
+      return res.status(404).json({ message: "Pedido não encontrado" });
+    return res.json(order);
+  } catch (err) {
+    console.error("Erro ao buscar pedido:", err);
     res.status(500).send("Erro interno do servidor");
   }
 });
