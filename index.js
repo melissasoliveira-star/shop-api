@@ -12,6 +12,10 @@ const userRoutes = require("./routes/userRoutes"); // Importa as rotas de usuár
 const productRoutes = require("./routes/productRoutes"); // Importa as rotas de produtos
 const orderRoutes = require("./routes/orderRoutes"); // Importa as rotas de produtos
 
+// >>> IMPORTA GRAPHQL
+const { graphqlHTTP } = require("express-graphql");
+const { schema, rootValue } = require("./graphql/schema");
+
 app.use(express.json()); // Middleware para interpretar o corpo das requisições como JSON
 
 // prefixo /api/users
@@ -23,7 +27,18 @@ app.use("/api/products", productRoutes);
 // prefixo /api/orders
 app.use("/api/orders", orderRoutes);
 
+// >>> ENDPOINT /graphql
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema,
+    rootValue,
+    graphiql: true, // habilita UI de testes em /graphql
+  }),
+);
+
 // Inicia o servidor e exibe o endereço no console
 app.listen(port, () => {
-  console.log(`API rodando em http://localhost:${port}`);
+  console.log(`API rodando em http://localhost:${port}/api`);
+  console.log(`API GraphQL rodando em http://localhost:${port}/graphql`);
 });
