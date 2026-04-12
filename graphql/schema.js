@@ -56,12 +56,14 @@ const schema = buildSchema(`
 
   type Query {
     # Usuários
-    usuarios(page: Int, limit: Int): [Usuario]   # Lista paginada de usuários
-    usuario(id: ID!): Usuario                    # Busca um usuário pelo ID
+    usuarios(page: Int, limit: Int): [Usuario]        # Lista paginada de usuários
+    buscarUsuariosPorNome(nome: String!): [Usuario]   # Pesquisa usuários pelo nome (parcial)
+    usuario(id: ID!): Usuario                         # Busca um usuário pelo ID
 
     # Produtos
-    produtos(page: Int, limit: Int): [Produto]   # Lista paginada de produtos
-    produto(id: ID!): Produto                    # Busca um produto pelo ID
+    produtos(page: Int, limit: Int): [Produto]        # Lista paginada de produtos
+    produto(id: ID!): Produto                         # Busca um produto pelo ID
+    buscarProdutosPorNome(nome: String!): [Produto]   # Pesquisa produtos pelo nome (parcial)
 
     # Pedidos
     pedidos(page: Int, limit: Int): [Pedido]        # Lista paginada de pedidos
@@ -112,6 +114,15 @@ const rootValue = {
     }));
   },
 
+  // Pesquisa usuários cujo nome contenha o termo informado (case-insensitive)
+  buscarUsuariosPorNome: async ({ nome }) => {
+    const users = await userRepo.findUsersByNome(nome);
+    return users.map((u) => ({
+      ...u,
+      pedidos: () => orderRepo.findOrderByUsuarioId(u.id),
+    }));
+  },
+
   // Retorna um único usuário pelo ID, com pedidos carregados lazily
   usuario: async ({ id }) => {
     const u = await userRepo.findUserById(id);
@@ -130,6 +141,10 @@ const rootValue = {
 
   // Retorna um único produto pelo ID
   produto: async ({ id }) => productRepo.findProductById(id),
+
+  // Pesquisa produtos cujo nome contenha o termo informado (case-insensitive)
+  buscarProdutosPorNome: async ({ nome }) =>
+    productRepo.findProductByNome(nome),
 
   // ── Queries: Pedidos ─────────────────────────────────────────────────────
 
