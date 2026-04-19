@@ -1,3 +1,5 @@
+// Teste de carga: busca de usuários por nome via GraphQL (query buscarUsuariosPorNome)
+// Simula 10 usuários virtuais por 30 segundos consultando pelo nome fixo "Ana"
 import http from "k6/http";
 import { check } from "k6";
 

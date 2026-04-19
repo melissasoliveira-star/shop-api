@@ -1,3 +1,5 @@
+// Teste de carga: criação de produtos via GraphQL (mutation criarProduto)
+// Simula 5 usuários virtuais por 20 segundos, cada um criando um produto com nome único
 import http from "k6/http";
 import { check } from "k6";
 import { uuidv4 } from "https://jslib.k6.io/k6-utils/1.4.0/index.js";
@@ -27,6 +29,7 @@ const mutation = `
 `;
 
 export default function () {
+  // Sufixo aleatório para evitar conflitos de nome entre iterações
   const id = uuidv4().substring(0, 8);
 
   const variables = {

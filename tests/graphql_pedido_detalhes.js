@@ -1,3 +1,6 @@
+// Teste de carga: detalhes de pedido via GraphQL (query pedidoDetalhes)
+// Simula 10 usuários virtuais por 30 segundos buscando o pedido de ID fixo
+// O mesmo ORDER_ID é usado no teste REST equivalente para comparação de desempenho
 import http from "k6/http";
 import { check } from "k6";
 

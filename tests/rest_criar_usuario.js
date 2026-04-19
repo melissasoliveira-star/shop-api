@@ -1,3 +1,5 @@
+// Teste de carga: criação de usuários via REST (POST /api/users)
+// Simula 5 usuários virtuais por 20 segundos, cada um criando um usuário com e-mail único
 import http from "k6/http";
 import { check } from "k6";
 import { uuidv4 } from "https://jslib.k6.io/k6-utils/1.4.0/index.js";
@@ -10,6 +12,7 @@ export const options = {
 const BASE_URL = "http://localhost:3000";
 
 export default function () {
+  // Sufixo aleatório para garantir e-mails únicos em cada iteração
   const id = uuidv4().substring(0, 8);
   const payload = JSON.stringify({
     nome: `Usuario REST ${id}`,

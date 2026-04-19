@@ -1,3 +1,5 @@
+// Teste de carga: listagem paginada de produtos via REST (GET /api/products?page=&limit=)
+// Simula 10 usuários virtuais por 30 segundos buscando a primeira página com 10 itens
 import http from "k6/http";
 import { check } from "k6";
 

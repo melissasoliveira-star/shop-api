@@ -1,3 +1,5 @@
+// Teste de carga: detalhes de pedido via REST (GET /api/orders/:id/details)
+// Simula 10 usuários virtuais por 30 segundos buscando o pedido de ID fixo
 import http from "k6/http";
 import { check } from "k6";
 

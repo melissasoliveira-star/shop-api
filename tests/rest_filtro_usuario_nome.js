@@ -1,3 +1,5 @@
+// Teste de carga: busca de usuários por nome via REST (GET /api/users?nome=)
+// Simula 10 usuários virtuais por 30 segundos filtrando pelo nome fixo "Ana"
 import http from "k6/http";
 import { check } from "k6";
 
