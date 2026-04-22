@@ -1,5 +1,5 @@
-// Teste de carga: listagem paginada de usuários via GraphQL (query usuarios)
-// Simula 10 usuários virtuais por 30 segundos buscando a primeira página com 10 itens
+// Teste de carga: listagem paginada de usuarios via GraphQL (query usuarios)
+// Simula 10 usuarios virtuais por 30 segundos buscando a primeira pagina com 10 itens
 import http from "k6/http";
 import { check } from "k6";
 
@@ -25,8 +25,11 @@ export default function () {
   const params = { headers: { "Content-Type": "application/json" } };
 
   const res = http.post(BASE_URL, payload, params);
+  const body = res.json();
 
   check(res, {
-    "status é 200": (r) => r.status === 200,
+    "status 200": (r) => r.status === 200,
+    "sem erros GraphQL": () => !body.errors,
+    "usuarios retornados em data": () => Array.isArray(body?.data?.usuarios),
   });
 }

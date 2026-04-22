@@ -22,6 +22,44 @@ async function findOrderByUsuarioId(id) {
   return result.rows || null;
 }
 
+async function findItemsByPedidoId(id) {
+  const query = `
+    SELECT
+      i.id,
+      i.produto_id,
+      i.quantidade,
+      i.preco_unitario,
+      pr.nome,
+      pr.descricao,
+      pr.preco,
+      pr.estoque,
+      pr.criado_em
+    FROM itens_pedido i
+    LEFT JOIN produtos pr ON pr.id = i.produto_id
+    WHERE i.pedido_id = $1
+    ORDER BY i.id ASC;
+  `;
+
+  const result = await db.query(query, [id]);
+
+  return result.rows.map((row) => ({
+    id: row.id,
+    produto_id: row.produto_id,
+    quantidade: row.quantidade,
+    preco_unitario: row.preco_unitario,
+    produto: row.produto_id
+      ? {
+          id: row.produto_id,
+          nome: row.nome,
+          descricao: row.descricao,
+          preco: row.preco,
+          estoque: row.estoque,
+          criado_em: row.criado_em,
+        }
+      : null,
+  }));
+}
+
 async function findOrderDetailsById(id) {
   const query = `
     SELECT
@@ -68,7 +106,7 @@ async function findOrderDetailsById(id) {
           id: row.produto_id,
           nome: row.produto_nome,
           descricao: row.produto_descricao,
-          preco_atual: row.produto_preco_atual,
+          preco: row.produto_preco_atual,
           estoque: row.produto_estoque,
         },
       })),
@@ -112,6 +150,7 @@ module.exports = {
   findAllOrders,
   findOrderById,
   findOrderByUsuarioId,
+  findItemsByPedidoId,
   findOrderDetailsById,
   createOrder,
   updateOrder,

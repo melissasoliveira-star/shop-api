@@ -1,5 +1,5 @@
-// Teste de carga: criação de usuários via GraphQL (mutation criarUsuario)
-// Simula 5 usuários virtuais por 20 segundos, cada um criando um usuário com e-mail único
+// Teste de carga: criacao de usuarios via GraphQL (mutation criarUsuario)
+// Simula 5 usuarios virtuais por 20 segundos, cada um criando um usuario com e-mail unico
 import http from "k6/http";
 import { check } from "k6";
 import { uuidv4 } from "https://jslib.k6.io/k6-utils/1.4.0/index.js";
@@ -22,7 +22,6 @@ const mutation = `
 `;
 
 export default function () {
-  // Sufixo aleatório para garantir e-mails únicos em cada iteração
   const id = uuidv4().substring(0, 8);
   const variables = {
     nome: `Usuario GQL ${id}`,
@@ -33,8 +32,12 @@ export default function () {
   const params = { headers: { "Content-Type": "application/json" } };
 
   const res = http.post(BASE_URL, payload, params);
+  const body = res.json();
 
   check(res, {
     "status 200": (r) => r.status === 200,
+    "sem erros GraphQL": () => !body.errors,
+    "usuario criado retornado": () =>
+      body?.data?.criarUsuario?.email === variables.email,
   });
 }
