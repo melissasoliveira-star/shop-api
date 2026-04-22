@@ -5,6 +5,16 @@ const userRepo = require("../repositories/userRepository");
 const productRepo = require("../repositories/productRepository");
 const orderRepo = require("../repositories/orderRepository");
 
+function hydratePedido(order) {
+  if (!order) return null;
+
+  return {
+    ...order,
+    usuario: () => userRepo.findUserById(order.usuario_id),
+    itens: () => orderRepo.findItemsByPedidoId(order.id),
+  };
+}
+
 const resolvers = {
   // ── Usuários ─────────────────────────────────────────────────────────────
 
@@ -15,7 +25,8 @@ const resolvers = {
     });
     return users.map((u) => ({
       ...u,
-      pedidos: () => orderRepo.findOrderByUsuarioId(u.id),
+      pedidos: async () =>
+        (await orderRepo.findOrderByUsuarioId(u.id)).map(hydratePedido),
     }));
   },
 
@@ -23,7 +34,8 @@ const resolvers = {
     const users = await userRepo.findUsersByNome(nome);
     return users.map((u) => ({
       ...u,
-      pedidos: () => orderRepo.findOrderByUsuarioId(u.id),
+      pedidos: async () =>
+        (await orderRepo.findOrderByUsuarioId(u.id)).map(hydratePedido),
     }));
   },
 
@@ -32,7 +44,8 @@ const resolvers = {
     if (!u) return null;
     return {
       ...u,
-      pedidos: () => orderRepo.findOrderByUsuarioId(u.id),
+      pedidos: async () =>
+        (await orderRepo.findOrderByUsuarioId(u.id)).map(hydratePedido),
     };
   },
 
@@ -49,9 +62,11 @@ const resolvers = {
   // ── Pedidos ───────────────────────────────────────────────────────────────
 
   pedidos: async ({ page, limit }) =>
-    orderRepo.findAllOrders({ page: page || 1, limit: limit || 10 }),
+    (await orderRepo.findAllOrders({ page: page || 1, limit: limit || 10 })).map(
+      hydratePedido,
+    ),
 
-  pedido: async ({ id }) => orderRepo.findOrderById(id),
+  pedido: async ({ id }) => hydratePedido(await orderRepo.findOrderById(id)),
 
   pedidoDetalhes: async ({ id }) => {
     const details = await orderRepo.findOrderDetailsById(id);
@@ -63,7 +78,7 @@ const resolvers = {
   },
 
   pedidosPorUsuario: async ({ usuario_id }) =>
-    orderRepo.findOrderByUsuarioId(usuario_id),
+    (await orderRepo.findOrderByUsuarioId(usuario_id)).map(hydratePedido),
 };
 
 module.exports = resolvers;

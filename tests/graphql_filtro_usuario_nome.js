@@ -1,5 +1,5 @@
-// Teste de carga: busca de usuários por nome via GraphQL (query buscarUsuariosPorNome)
-// Simula 10 usuários virtuais por 30 segundos consultando pelo nome fixo "Ana"
+// Teste de carga: busca de usuarios por nome via GraphQL (query buscarUsuariosPorNome)
+// Simula 10 usuarios virtuais por 30 segundos consultando pelo nome fixo "Ana"
 import http from "k6/http";
 import { check } from "k6";
 
@@ -25,8 +25,12 @@ export default function () {
   const params = { headers: { "Content-Type": "application/json" } };
 
   const res = http.post(BASE_URL, payload, params);
+  const body = res.json();
 
   check(res, {
-    "status é 200": (r) => r.status === 200,
+    "status 200": (r) => r.status === 200,
+    "sem erros GraphQL": () => !body.errors,
+    "usuarios filtrados em data": () =>
+      Array.isArray(body?.data?.buscarUsuariosPorNome),
   });
 }
