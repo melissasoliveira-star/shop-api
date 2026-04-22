@@ -128,7 +128,7 @@ ou
 
 ```graphql
 query {
-  usuarios(page: 3, limit: 10) {
+  usuarios(page: 1, limit: 10) {
     id
     nome
     email
