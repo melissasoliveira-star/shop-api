@@ -33,7 +33,7 @@ app.use(
   graphqlHTTP({
     schema,
     rootValue,
-    graphiql: true, // habilita UI de testes em /graphql
+    graphiql: process.env.NODE_ENV !== "production", // habilita UI de testes em /graphql
   }),
 );
 

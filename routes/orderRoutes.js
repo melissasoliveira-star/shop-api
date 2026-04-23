@@ -12,7 +12,7 @@ const orderRepo = require("../repositories/orderRepository");
 router.get("/", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 5;
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100);
 
     const orders = await orderRepo.findAllOrders({ page, limit });
     return res.json(orders);
@@ -79,6 +79,10 @@ router.post("/", async (req, res) => {
     });
   }
 
+  if (isNaN(Date.parse(data_pedido))) {
+    return res.status(400).json({ error: "data_pedido deve ser uma data válida." });
+  }
+
   try {
     const order = await orderRepo.createOrder({
       usuario_id,
@@ -131,7 +135,7 @@ router.delete("/:id", async (req, res) => {
   } catch (err) {
     if (err.code === "23503") {
       return res.status(400).json({
-        message: "Não é possível apagar: este pedido possui pedidos vínculos.",
+        message: "Não é possível apagar: este pedido possui itens vinculados.",
       });
     }
     console.error("Erro ao apagar pedido:", err);

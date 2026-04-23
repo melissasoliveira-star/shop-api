@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
       users = users ? [users] : [];
     } else {
       const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 5;
+      const limit = Math.min(parseInt(req.query.limit) || 10, 100);
 
       users = await userRepo.findAllUsers({ page, limit });
     }
