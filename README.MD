@@ -242,7 +242,7 @@ k6 run tests/rest_usuarios_list.js
 k6 run tests/graphql_usuarios_list.js
 ```
 
-Os scripts utilizam a configuração padrão de `vus: 5` ou `vus: 10` e `duration: "20s"`, executando 5 usuários virtuais simultâneos por 20 segundos. As métricas coletadas incluem tempo de resposta (p50, p90, p95, p99), requisições por segundo e taxa de erros.
+Os scripts utilizam a configuração padrão de `vus: 5` ou `vus: 10` e `duration: "20s"`, executando 5 ou 10 usuários virtuais simultâneos por 20 segundos. As métricas coletadas incluem tempo de resposta (p50, p90, p95, p99), requisições por segundo e taxa de erros.
 
 ## Autora
 
