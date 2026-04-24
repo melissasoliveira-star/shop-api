@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
       products = await productRepo.findProductByNome(nome);
     } else {
       const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 5;
+      const limit = Math.min(parseInt(req.query.limit) || 10, 100);
 
       products = await productRepo.findAllProducts({ page, limit });
     }

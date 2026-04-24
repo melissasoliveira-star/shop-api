@@ -19,7 +19,7 @@ async function findOrderByUsuarioId(id) {
     id,
   ]);
 
-  return result.rows || null;
+  return result.rows || [];
 }
 
 async function findItemsByPedidoId(id) {

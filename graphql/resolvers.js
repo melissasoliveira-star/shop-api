@@ -21,12 +21,12 @@ const resolvers = {
   usuarios: async ({ page, limit }) => {
     const users = await userRepo.findAllUsers({
       page: page || 1,
-      limit: limit || 5,
+      limit: limit || 10,
     });
     return users.map((u) => ({
       ...u,
       pedidos: async () =>
-        (await orderRepo.findOrderByUsuarioId(u.id)).map(hydratePedido),
+        (await orderRepo.findOrderByUsuarioId(u.id) ?? []).map(hydratePedido),
     }));
   },
 
@@ -35,7 +35,7 @@ const resolvers = {
     return users.map((u) => ({
       ...u,
       pedidos: async () =>
-        (await orderRepo.findOrderByUsuarioId(u.id)).map(hydratePedido),
+        (await orderRepo.findOrderByUsuarioId(u.id) ?? []).map(hydratePedido),
     }));
   },
 
@@ -45,7 +45,7 @@ const resolvers = {
     return {
       ...u,
       pedidos: async () =>
-        (await orderRepo.findOrderByUsuarioId(u.id)).map(hydratePedido),
+        (await orderRepo.findOrderByUsuarioId(u.id) ?? []).map(hydratePedido),
     };
   },
 
