@@ -12,11 +12,12 @@ export const options = {
 const BASE_URL = "http://localhost:3000/graphql";
 
 const mutation = `
-  mutation ($nome: String!, $email: String!) {
-    criarUsuario(nome: $nome, email: $email) {
+  mutation ($nome: String!, $email: String!, $senha: String!) {
+    criarUsuario(nome: $nome, email: $email, senha: $senha) {
       id
       nome
       email
+      senha
     }
   }
 `;
@@ -26,6 +27,7 @@ export default function () {
   const variables = {
     nome: `Usuario GQL ${id}`,
     email: `gql_${id}@teste.com`,
+    senha: `Senha@${id}`,
   };
 
   const payload = JSON.stringify({ query: mutation, variables });

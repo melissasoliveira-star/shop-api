@@ -17,6 +17,7 @@ export default function () {
   const payload = JSON.stringify({
     nome: `Usuario REST ${id}`,
     email: `rest_${id}@teste.com`,
+    senha: `Senha@${id}`,
   });
 
   const params = { headers: { "Content-Type": "application/json" } };
