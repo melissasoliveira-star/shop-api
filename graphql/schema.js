@@ -11,6 +11,7 @@ const schema = buildSchema(`
     id: ID!
     nome: String!
     email: String!
+    senha: String
     criado_em: String
     pedidos: [Pedido]       # Lista de pedidos feitos pelo usuário (resolvida lazily)
   }
@@ -71,7 +72,7 @@ const schema = buildSchema(`
 
   type Mutation {
     # Usuários
-    criarUsuario(nome: String!, email: String!): Usuario
+    criarUsuario(nome: String!, email: String!, senha: String!): Usuario
     atualizarUsuario(id: ID!, nome: String, email: String): Usuario
     deletarUsuario(id: ID!): Usuario
 

@@ -145,10 +145,15 @@ query {
 
 ```graphql
 mutation {
-  criarUsuario(nome: "Usuário Teste", email: "usuario.teste@example.com") {
+  criarUsuario(
+    nome: "Usuário Teste"
+    email: "usuario.teste@example.com"
+    senha: "1234"
+  ) {
     id
     nome
     email
+    senha
   }
 }
 ```

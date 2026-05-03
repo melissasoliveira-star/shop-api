@@ -8,7 +8,7 @@ const orderRepo = require("../repositories/orderRepository");
 const mutations = {
   // ── Usuários ──────────────────────────────────────────────────────────────
 
-  criarUsuario: async ({ nome, email }) => userRepo.createUser({ nome, email }),
+  criarUsuario: async ({ nome, email, senha }) => userRepo.createUser({ nome, email, senha }),
 
   atualizarUsuario: async ({ id, nome, email }) =>
     userRepo.updateUser(id, { nome, email }),

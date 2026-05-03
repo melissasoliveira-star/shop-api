@@ -57,15 +57,15 @@ router.get("/:id", async (req, res) => {
 
 // POST /api/users - Cria um novo usuário
 router.post("/", async (req, res) => {
-  const { nome, email } = req.body; // Extrai os dados do corpo da requisição
+  const { nome, email, senha } = req.body; // Extrai os dados do corpo da requisição
 
   // Valida se os campos obrigatórios foram enviados
-  if (!nome || !email) {
+  if (!nome || !email || !senha) {
     return res.status(400).json({ error: "Nome e e-mail são obrigatórios." });
   }
 
   try {
-    const user = await userRepo.createUser({ nome, email }); // Persiste o novo usuário
+    const user = await userRepo.createUser({ nome, email, senha }); // Persiste o novo usuário
     return res.status(201).json(user); // 201 Created com os dados do usuário criado
   } catch (err) {
     if (err.code === "23505") {

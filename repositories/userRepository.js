@@ -34,10 +34,10 @@ async function findUsersByNome(nome) {
 }
 
 // Insere um novo usuário no banco e retorna o registro criado
-async function createUser({ nome, email }) {
+async function createUser({ nome, email, senha }) {
   const result = await db.query(
-    "INSERT INTO usuarios (nome, email) VALUES ($1, $2) RETURNING *;",
-    [nome, email],
+    "INSERT INTO usuarios (nome, email, senha) VALUES ($1, $2, $3) RETURNING *;",
+    [nome, email, senha],
   );
   return result.rows[0]; // Retorna o usuário recém-criado
 }

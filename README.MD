@@ -12,7 +12,7 @@ Este repositório faz parte do estudo:
 > <br>
 > MBA em Engenharia de Software — 2025/2026
 > <br>
-> Orientador(a): Jamile Raquel Regazzo
+> Orientadora: Jamile Raquel Regazzo
 
 Ambas as abordagens foram implementadas na mesma aplicação, compartilhando o mesmo banco de dados, repositórios e lógica de negócio. Os testes de desempenho foram realizados com a ferramenta **k6**, medindo métricas como tempo de resposta (p50, p90, p95, p99), requisições por segundo e taxa de erros, em cenários equivalentes para REST e GraphQL.
 
@@ -56,6 +56,7 @@ shop-api/
 │   └── resolvers.js          # Resolvers das queries e mutations
 │
 └── tests/                    # Scripts k6 de testes de carga
+    ├── README.md
     ├── rest_usuarios_list.js
     ├── rest_produtos_list.js
     ├── rest_pedido_detalhes.js
