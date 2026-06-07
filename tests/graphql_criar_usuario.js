@@ -23,7 +23,7 @@ const mutation = `
 `;
 
 export default function () {
-  const id = uuidv4().substring(0, 8);
+  const id = uuidv4();
   const variables = {
     nome: `Usuario GQL ${id}`,
     email: `gql_${id}@teste.com`,

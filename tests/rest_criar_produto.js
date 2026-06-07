@@ -13,7 +13,7 @@ const BASE_URL = "http://localhost:3000";
 
 export default function () {
   // Sufixo aleatório para evitar conflitos de nome entre iterações
-  const id = uuidv4().substring(0, 8);
+  const id = uuidv4();
 
   const payload = JSON.stringify({
     nome: `Produto REST ${id}`,
