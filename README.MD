@@ -20,15 +20,17 @@ Ambas as abordagens foram implementadas na mesma aplicação, compartilhando o m
 
 ## Tecnologias utilizadas
 
-| Tecnologia      | Versão   | Finalidade                   |
-| --------------- | -------- | ---------------------------- |
-| Node.js         | ^24.13.1 | Runtime da aplicação         |
-| Express         | ^5.2.1   | Framework HTTP / REST        |
-| express-graphql | ^0.12.0  | Middleware GraphQL           |
-| graphql         | ^15.10.2 | Biblioteca GraphQL           |
-| pg              | ^8.20.0  | Conexão com PostgreSQL       |
-| dotenv          | ^17.4.0  | Variáveis de ambiente        |
-| k6              | ^1.7.1   | Testes de carga e desempenho |
+| Tecnologia       | Versão   | Finalidade                           |
+| ---------------- | -------- | ------------------------------------ |
+| Node.js          | ^24.13.1 | Runtime da aplicação                 |
+| Express          | ^5.2.1   | Framework HTTP / REST                |
+| express-graphql  | ^0.12.0  | Middleware GraphQL                   |
+| graphql          | ^15.10.2 | Biblioteca GraphQL                   |
+| pg               | ^8.20.0  | Conexão com PostgreSQL               |
+| dotenv           | ^17.4.0  | Variáveis de ambiente                |
+| PostgreSQL       | 18       | Banco de dados relacional            |
+| Docker / Compose | —        | Containerização e orquestração local |
+| k6               | ^1.7.1   | Testes de carga e desempenho         |
 
 ---
 
@@ -39,6 +41,10 @@ shop-api/
 ├── index.js                  # Ponto de entrada — sobe REST e GraphQL no mesmo servidor
 ├── db.js                     # Configuração da conexão com PostgreSQL
 ├── queries.sql               # Script SQL para criação das tabelas e dados iniciais
+├── docker-compose.yml
+│
+├── Dockerfile
+│
 ├── package.json
 │
 ├── routes/                   # Rotas REST
@@ -73,32 +79,73 @@ shop-api/
 
 ---
 
-## Pré-requisitos
-
-- [Node.js](https://nodejs.org/) (v18 ou superior recomendado)
-- [PostgreSQL](https://www.postgresql.org/) (v14 ou superior)
-- [k6](https://k6.io/docs/getting-started/installation/) (para execução dos testes de carga)
-
----
-
 ## Configuração
 
-### 1. Clone o repositório
+Há duas formas de rodar o projeto: com Docker (recomendado, mais rápido) ou de forma manual instalando Node.js e PostgreSQL diretamente na máquina.
+
+### Opção 1: Com Docker (recomendado)
+
+Pré-requisito: [Docker](https://www.docker.com/products/docker-desktop/) instalado.
+
+1. Clone o repositório:
 
 ```bash
 git clone https://github.com/melissasoliveira-star/shop-api.git
 cd shop-api
 ```
 
-### 2. Instale as dependências
+2. Copie o arquivo de variáveis de ambiente de exemplo:
 
 ```bash
+cp .env.example .env
+```
+
+3. Suba a aplicação:
+
+```bash
+docker compose up --build
+```
+
+Esse comando constrói a imagem da API, sobe um container PostgreSQL, popula o banco automaticamente com o script `queries.sql` na primeira execução, e inicia a aplicação.
+
+A aplicação fica disponível em:
+
+| Endpoint                        | Descrição                             |
+| ------------------------------- | ------------------------------------- |
+| `http://localhost:3000/api`     | API REST                              |
+| `http://localhost:3000/graphql` | API GraphQL (com GraphiQL habilitado) |
+
+Para parar a aplicação:
+
+```bash
+docker compose down
+```
+
+Para parar e remover também os dados do banco (reinício limpo):
+
+```bash
+docker compose down -v
+```
+
+> **Nota para desenvolvimento:** este setup copia o código para dentro da imagem no momento do build. Alterações no código exigem rodar `docker compose up --build` novamente para serem refletidas. Para um fluxo de desenvolvimento com hot-reload, seria necessário adicionar volumes de bind mount não implementado neste projeto, já que o foco aqui é demonstração e reprodutibilidade dos testes de desempenho.
+
+### Opção 2: Instalação manual
+
+Pré-requisitos:
+
+- [Node.js](https://nodejs.org/) (v18 ou superior recomendado)
+- [PostgreSQL](https://www.postgresql.org/) (v14 ou superior)
+- [k6](https://k6.io/docs/getting-started/installation/) (para execução dos testes de carga)
+
+1. Clone o repositório e instale as dependências:
+
+```bash
+git clone https://github.com/melissasoliveira-star/shop-api.git
+cd shop-api
 npm install
 ```
 
-### 3. Configure as variáveis de ambiente
-
-Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+2. Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
 
 ```env
 PORT=3000
@@ -107,32 +154,20 @@ DB_PORT=5432
 DB_USER=seu_usuario
 DB_PASSWORD=sua_senha
 DB_NAME=nome_do_banco
+DB_MAX=10
 ```
 
-### 4. Crie o banco de dados e as tabelas
-
-Execute o script SQL disponível na raiz do projeto:
+3. Crie o banco de dados e as tabelas:
 
 ```bash
 psql -U seu_usuario -d nome_do_banco -f queries.sql
 ```
 
----
-
-## Execução
+4. Execute a aplicação:
 
 ```bash
 node index.js
 ```
-
-A aplicação sobe dois endpoints no mesmo servidor:
-
-| Endpoint                        | Descrição                             |
-| ------------------------------- | ------------------------------------- |
-| `http://localhost:3000/api`     | API REST                              |
-| `http://localhost:3000/graphql` | API GraphQL (com GraphiQL habilitado) |
-
-O GraphiQL é uma interface interativa acessível via navegador em `http://localhost:3000/graphql`, útil para explorar o schema e executar queries manualmente.
 
 ---
 

@@ -8,7 +8,16 @@ const orderRepo = require("../repositories/orderRepository");
 const mutations = {
   // ── Usuários ──────────────────────────────────────────────────────────────
 
-  criarUsuario: async ({ nome, email, senha }) => userRepo.createUser({ nome, email, senha }),
+  criarUsuario: async ({ nome, email, senha }) => {
+    try {
+      return await userRepo.createUser({ nome, email, senha });
+    } catch (err) {
+      if (err.code === "23505") {
+        throw new Error("Este e-mail já está registrado.");
+      }
+      throw err;
+    }
+  },
 
   atualizarUsuario: async ({ id, nome, email }) =>
     userRepo.updateUser(id, { nome, email }),

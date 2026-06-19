@@ -12,7 +12,7 @@ const db = new Pool({
 });
 
 // Conecta ao banco e exibe status no console
-db.connect()
+db.query("SELECT NOW()")
   .then(() => console.log("Conectado ao PostgreSQL com sucesso!"))
   .catch((err) => console.error("Erro ao conectar ao banco:", err));
 
