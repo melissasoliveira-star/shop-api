@@ -7,10 +7,10 @@ WORKDIR /app
 # Copia primeiro apenas os arquivos de dependências
 # Isso aproveita o cache do Docker: se o código mudar mas as dependências não,
 # o "npm install" não precisa rodar de novo no próximo build
-COPY package.json ./
+COPY package.json package-lock.json ./
 
 # Instala as dependências de produção
-RUN npm install --omit=dev
+RUN npm ci --omit=dev
 
 # Agora copia o restante do código da aplicação
 COPY . .
