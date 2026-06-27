@@ -9,7 +9,7 @@ export const options = {
   duration: "30s",
 };
 
-const BASE_URL = "http://localhost:3000/graphql";
+const BASE_URL = (__ENV.BASE_URL || "http://localhost:3000") + "/graphql";
 const ORDER_ID = 1;
 
 const query = `
@@ -50,8 +50,10 @@ export default function () {
   check(res, {
     "status 200": (r) => r.status === 200,
     "sem erros GraphQL": () => !body.errors,
-    "pedido retornado em data": () => body?.data?.pedidoDetalhes?.id !== undefined,
-    "usuario resolvido": () => body?.data?.pedidoDetalhes?.usuario?.id !== undefined,
+    "pedido retornado em data": () =>
+      body?.data?.pedidoDetalhes?.id !== undefined,
+    "usuario resolvido": () =>
+      body?.data?.pedidoDetalhes?.usuario?.id !== undefined,
     "itens retornados": () => Array.isArray(body?.data?.pedidoDetalhes?.itens),
     "produto contem preco": () => {
       const produto = body?.data?.pedidoDetalhes?.itens?.[0]?.produto;

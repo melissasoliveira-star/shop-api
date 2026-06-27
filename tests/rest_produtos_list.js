@@ -8,7 +8,7 @@ export const options = {
   duration: "30s",
 };
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = __ENV.BASE_URL || "http://localhost:3000";
 
 export default function () {
   const res = http.get(`${BASE_URL}/api/products?page=1&limit=10`);

@@ -8,7 +8,7 @@ export const options = {
   duration: "30s",
 };
 
-const BASE_URL = "http://localhost:3000/graphql";
+const BASE_URL = (__ENV.BASE_URL || "http://localhost:3000") + "/graphql";
 
 const query = `
   query {

@@ -9,7 +9,7 @@ export const options = {
   duration: "20s",
 };
 
-const BASE_URL = "http://localhost:3000/graphql";
+const BASE_URL = (__ENV.BASE_URL || "http://localhost:3000") + "/graphql";
 
 const mutation = `
   mutation ($nome: String!, $descricao: String, $preco: Float!, $estoque: Int) {
