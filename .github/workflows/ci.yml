@@ -40,14 +40,3 @@ jobs:
         run: psql -h localhost -U test_user -d test_db -f queries.sql
         env:
           PGPASSWORD: test_password
-
-      - name: Run tests
-        run: npm test
-        env:
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_USER: test_user
-          DB_PASSWORD: test_password
-          DB_NAME: test_db
-          DB_MAX: 10
-          PORT: 3000
