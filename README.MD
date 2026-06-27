@@ -280,6 +280,30 @@ k6 run tests/graphql_usuarios_list.js
 
 Os scripts utilizam a configuração padrão de `vus: 5` ou `vus: 10` e `duration: "20s"`, executando 5 ou 10 usuários virtuais simultâneos por 20 segundos. As métricas coletadas incluem tempo de resposta (p50, p90, p95, p99), requisições por segundo e taxa de erros.
 
+### Executando contra a API em produção (Render)
+
+Além de rodar localmente, os mesmos scripts podem ser executados contra a instância pública da API, sem precisar clonar o banco de dados ou subir nada localmente, tendo apenas o k6 instalado na sua máquina.
+
+A API está publicada em:
+
+```
+https://shop-api-tldb.onrender.com
+```
+
+Para apontar qualquer teste para essa URL, passe-a pela flag `-e BASE_URL=`:
+
+```bash
+k6 run tests/rest_usuarios_list.js -e BASE_URL=https://shop-api-tldb.onrender.com
+```
+
+```bash
+k6 run tests/graphql_usuarios_list.js -e BASE_URL=https://shop-api-tldb.onrender.com
+```
+
+O mesmo padrão se aplica a qualquer um dos 12 scripts da pasta `tests/`. Quando a flag `-e BASE_URL=` não é informada, os scripts utilizam `http://localhost:3000` por padrão, por isso a execução local (Opções 1 e 2 acima) continua funcionando sem alterações.
+
+> **Nota:** por estar hospedada no plano gratuito do Render, a instância pode levar alguns segundos para responder à primeira requisição após um período de inatividade (cold start). Isso é esperado e pode impactar as métricas de tempo de resposta do primeiro usuário virtual em cada execução.
+
 ## Autora
 
 **Melissa Oliveira**<br>
