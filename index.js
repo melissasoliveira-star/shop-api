@@ -15,6 +15,7 @@ const orderRoutes = require("./routes/orderRoutes"); // Importa as rotas de prod
 // >>> IMPORTA GRAPHQL
 const { graphqlHTTP } = require("express-graphql");
 const { schema, rootValue } = require("./graphql/schema");
+const { createLoaders } = require("./graphql/loaders");
 
 app.use(express.json()); // Middleware para interpretar o corpo das requisições como JSON
 
@@ -30,11 +31,12 @@ app.use("/api/orders", orderRoutes);
 // >>> ENDPOINT /graphql
 app.use(
   "/graphql",
-  graphqlHTTP({
+  graphqlHTTP((req) => ({
     schema,
     rootValue,
     graphiql: process.env.NODE_ENV !== "production", // habilita UI de testes em /graphql
-  }),
+    context: { loaders: createLoaders() }, // novo a cada requisição
+  })),
 );
 
 // Inicia o servidor e exibe o endereço no console
