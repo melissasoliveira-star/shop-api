@@ -38,30 +38,41 @@ Ambas as abordagens foram implementadas na mesma aplicação, compartilhando o m
 
 ```
 shop-api/
-├── index.js                  # Ponto de entrada — sobe REST e GraphQL no mesmo servidor
-├── db.js                     # Configuração da conexão com PostgreSQL
-├── queries.sql               # Script SQL para criação das tabelas e dados iniciais
+├── src/                          # Código-fonte da aplicação (organização MVC)
+│   ├── server.js                 # Ponto de entrada — abre o servidor HTTP
+│   ├── app.js                    # Composição do Express (middlewares + rotas)
+│   │
+│   ├── config/
+│   │   └── db.js                 # Configuração da conexão com PostgreSQL
+│   │
+│   ├── routes/                   # Rotas REST (camada fina: URL -> controller)
+│   │   ├── userRoutes.js
+│   │   ├── productRoutes.js
+│   │   ├── orderRoutes.js
+│   │   └── graphql.js            # Monta o endpoint /graphql
+│   │
+│   ├── controllers/              # Controllers (validação, status HTTP, chama models)
+│   │   ├── userController.js
+│   │   ├── productController.js
+│   │   └── orderController.js
+│   │
+│   ├── models/                  # Camada de acesso ao banco de dados (Model)
+│   │   ├── userRepository.js
+│   │   ├── productRepository.js
+│   │   └── orderRepository.js
+│   │
+│   └── graphql/                  # Implementação GraphQL (coesa: schema + resolvers + loaders)
+│       ├── schema.js             # Definição do schema (tipos, queries, mutations)
+│       ├── resolvers.js          # Resolvers das queries
+│       ├── mutations.js          # Resolvers das mutations
+│       └── loaders.js            # DataLoaders (batch de consultas por requisição)
+│
+├── queries.sql                   # Script SQL para criação das tabelas e dados iniciais
 ├── docker-compose.yml
-│
-├── Dockerfile
-│
+├── Dockerfile                    # Entrada: src/server.js
 ├── package.json
 │
-├── routes/                   # Rotas REST
-│   ├── userRoutes.js
-│   ├── productRoutes.js
-│   └── orderRoutes.js
-│
-├── repositories/             # Camada de acesso ao banco de dados (compartilhada)
-│   ├── userRepository.js
-│   ├── productRepository.js
-│   └── orderRepository.js
-│
-├── graphql/                  # Implementação GraphQL
-│   ├── schema.js             # Definição do schema (tipos, queries, mutations)
-│   └── resolvers.js          # Resolvers das queries e mutations
-│
-└── tests/                    # Scripts k6 de testes de carga
+└── tests/                        # Scripts k6 de testes de carga
     ├── README.md
     ├── rest_usuarios_list.js
     ├── rest_produtos_list.js
@@ -166,7 +177,7 @@ psql -U seu_usuario -d nome_do_banco -f queries.sql
 4. Execute a aplicação:
 
 ```bash
-node index.js
+node src/server.js
 ```
 
 ---

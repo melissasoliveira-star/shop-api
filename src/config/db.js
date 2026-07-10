@@ -1,3 +1,4 @@
+// config/db.js
 // Importa o cliente PostgreSQL para conexão com o banco de dados
 const { Pool } = require("pg");
 

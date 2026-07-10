@@ -1,4 +1,4 @@
-// graphql/schema.js
+// src/graphql/schema.js
 // Define o schema GraphQL (SDL) e combina resolvers e mutations no rootValue.
 
 const { buildSchema } = require("graphql");

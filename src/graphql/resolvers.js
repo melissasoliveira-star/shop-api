@@ -1,9 +1,9 @@
-// graphql/resolvers.js
+// src/graphql/resolvers.js
 // Resolvers das queries (operações de leitura).
 
-const userRepo = require("../repositories/userRepository");
-const productRepo = require("../repositories/productRepository");
-const orderRepo = require("../repositories/orderRepository");
+const userRepo = require("../models/userRepository");
+const productRepo = require("../models/productRepository");
+const orderRepo = require("../models/orderRepository");
 
 function hydratePedido(order, loaders) {
   if (!order) return null;

@@ -1,6 +1,7 @@
+// src/graphql/loaders.js
 const DataLoader = require("dataloader");
-const userRepo = require("../repositories/userRepository");
-const orderRepo = require("../repositories/orderRepository");
+const userRepo = require("../models/userRepository");
+const orderRepo = require("../models/orderRepository");
 
 function createLoaders() {
   return {

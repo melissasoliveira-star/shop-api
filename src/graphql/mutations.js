@@ -1,9 +1,9 @@
-// graphql/mutations.js
+// src/graphql/mutations.js
 // Resolvers das mutations (operações de escrita: criar, atualizar, deletar).
 
-const userRepo = require("../repositories/userRepository");
-const productRepo = require("../repositories/productRepository");
-const orderRepo = require("../repositories/orderRepository");
+const userRepo = require("../models/userRepository");
+const productRepo = require("../models/productRepository");
+const orderRepo = require("../models/orderRepository");
 
 const mutations = {
   // ── Usuários ──────────────────────────────────────────────────────────────

@@ -7,7 +7,7 @@ Esta pasta contém os scripts de teste de carga utilizados para comparar o desem
 ## Pré-requisitos
 
 - [k6](https://k6.io/docs/get-started/installation/) v1.7.1 ou superior
-- A aplicação em execução localmente na porta `3000` (`node index.js`)
+- A aplicação em execução localmente na porta `3000` (`node src/server.js`)
 - Banco de dados PostgreSQL populado (ver seção [Estado do banco](#estado-do-banco-de-dados))
 
 ---

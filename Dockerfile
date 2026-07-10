@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 3000
 
 # Comando que inicia a aplicação quando o container sobe
-CMD ["node", "index.js"]
+CMD ["node", "src/server.js"]

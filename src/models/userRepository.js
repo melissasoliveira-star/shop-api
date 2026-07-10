@@ -1,4 +1,4 @@
-const db = require("../db"); // Importa a conexão com o banco de dados
+const db = require("../config/db"); // Importa a conexão com o banco de dados
 
 // Retorna todos os usuários ordenados por ID crescente
 async function findAllUsers({ page = 1, limit = 10 } = {}) {

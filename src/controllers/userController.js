@@ -1,11 +1,14 @@
-// routes/userRoutes.js - Define as rotas HTTP para o recurso de usuários
-const express = require("express");
-const router = express.Router(); // Cria um roteador isolado do Express
-const userRepo = require("../repositories/userRepository"); // Importa o repositório de usuários
-const orderRepo = require("../repositories/orderRepository"); // Importa o repositório de pedidos, responsável pela comunicação com o banco de dados
+// src/controllers/userController.js
+// Controller do recurso de usuários.
+// Recebe req/res, valida entradas, chama o model e traduz erros do Postgres em
+// status HTTP apropriados. Nenhuma regra de SQL vive aqui.
 
-// GET /api/users?nome=João&email=x - Lista todos, ou filtra por nome e/ou email se informados
-router.get("/", async (req, res) => {
+const userRepo = require("../models/userRepository");
+const orderRepo = require("../models/orderRepository");
+
+// GET /api/users?nome=João&email=x
+// Lista todos, ou filtra por nome e/ou email se informados
+exports.list = async (req, res) => {
   try {
     const { nome, email } = req.query;
     let users;
@@ -25,12 +28,12 @@ router.get("/", async (req, res) => {
     console.error("Erro ao buscar usuários:", err);
     res.status(500).send("Erro interno do servidor");
   }
-});
+};
 
 // GET /api/users/:id/orders
 // Retorna um pedido pelo ID do usuário (usuario_id)
 // Responde com 404 se o pedido não for encontrado
-router.get("/:id/orders", async (req, res) => {
+exports.listOrdersByUser = async (req, res) => {
   try {
     const order = await orderRepo.findOrderByUsuarioId(req.params.id);
     if (!order)
@@ -40,10 +43,10 @@ router.get("/:id/orders", async (req, res) => {
     console.error("Erro ao buscar pedido:", err);
     res.status(500).send("Erro interno do servidor");
   }
-});
+};
 
 // GET /api/users/:id - Busca um usuário pelo ID
-router.get("/:id", async (req, res) => {
+exports.getById = async (req, res) => {
   try {
     const user = await userRepo.findUserById(req.params.id); // Usa o ID da URL
     if (!user)
@@ -53,10 +56,10 @@ router.get("/:id", async (req, res) => {
     console.error("Erro ao buscar usuário:", err);
     res.status(500).send("Erro interno do servidor");
   }
-});
+};
 
 // POST /api/users - Cria um novo usuário
-router.post("/", async (req, res) => {
+exports.create = async (req, res) => {
   const { nome, email, senha } = req.body; // Extrai os dados do corpo da requisição
 
   // Valida se os campos obrigatórios foram enviados
@@ -75,10 +78,10 @@ router.post("/", async (req, res) => {
     console.error("Erro ao criar usuário:", err);
     res.status(500).send("Erro interno do servidor");
   }
-});
+};
 
 // PUT /api/users/:id - Atualiza os dados de um usuário existente
-router.put("/:id", async (req, res) => {
+exports.update = async (req, res) => {
   const { nome, email } = req.body; // Extrai os campos a atualizar do corpo da requisição
 
   try {
@@ -90,10 +93,10 @@ router.put("/:id", async (req, res) => {
     console.error("Erro ao atualizar usuário:", err);
     res.status(500).send("Erro interno do servidor");
   }
-});
+};
 
 // DELETE /api/users/:id - Remove um usuário pelo ID
-router.delete("/:id", async (req, res) => {
+exports.remove = async (req, res) => {
   try {
     const deleted = await userRepo.deleteUser(req.params.id); // Tenta remover o usuário
 
@@ -113,6 +116,4 @@ router.delete("/:id", async (req, res) => {
     console.error("Erro ao apagar usuário:", err);
     res.status(500).send("Erro interno do servidor");
   }
-});
-
-module.exports = router; // Exporta o roteador para uso no index.js
+};
