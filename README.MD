@@ -24,8 +24,9 @@ Ambas as abordagens foram implementadas na mesma aplicação, compartilhando o m
 | ---------------- | -------- | ------------------------------------ |
 | Node.js          | ^24.13.1 | Runtime da aplicação                 |
 | Express          | ^5.2.1   | Framework HTTP / REST                |
-| express-graphql  | ^0.12.0  | Middleware GraphQL                   |
+| graphql-http     | ^1.22.4  | Middleware GraphQL                   |
 | graphql          | ^15.10.2 | Biblioteca GraphQL                   |
+| ruru             | ^2.0.0   | UI de testes GraphQL (`/graphiql`)   |
 | pg               | ^8.20.0  | Conexão com PostgreSQL               |
 | dotenv           | ^17.4.0  | Variáveis de ambiente                |
 | PostgreSQL       | 18       | Banco de dados relacional            |
@@ -121,10 +122,11 @@ Esse comando constrói a imagem da API, sobe um container PostgreSQL, popula o b
 
 A aplicação fica disponível em:
 
-| Endpoint                        | Descrição                             |
-| ------------------------------- | ------------------------------------- |
-| `http://localhost:3000/api`     | API REST                              |
-| `http://localhost:3000/graphql` | API GraphQL (com GraphiQL habilitado) |
+| Endpoint                         | Descrição                                    |
+| -------------------------------- | -------------------------------------------- |
+| `http://localhost:3000/api`      | API REST                                     |
+| `http://localhost:3000/graphql`  | API GraphQL                                  |
+| `http://localhost:3000/graphiql` | UI de testes GraphQL (ambiente não-produção) |
 
 Para parar a aplicação:
 

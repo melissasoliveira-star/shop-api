@@ -1,11 +1,24 @@
 {
+  "name": "shop-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "docker compose down && docker compose up --build"
+  },
+  "keywords": [],
+  "author": "Melissa Oliveira",
+  "license": "ISC",
+  "type": "commonjs",
   "dependencies": {
     "dataloader": "^2.2.3",
     "docker": "^1.0.0",
     "dotenv": "^17.4.0",
     "express": "^5.2.1",
-    "express-graphql": "^0.12.0",
     "graphql": "^15.10.2",
-    "pg": "^8.20.0"
+    "graphql-http": "^1.22.4",
+    "pg": "^8.20.0",
+    "ruru": "^2.0.0"
   }
 }

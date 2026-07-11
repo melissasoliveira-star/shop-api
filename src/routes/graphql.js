@@ -1,17 +1,26 @@
 // src/routes/graphql.js - Monta o endpoint GraphQL na aplicação.
 // Recebe o app Express e registra o /graphql com o schema e o contexto de loaders.
-const { graphqlHTTP } = require("express-graphql");
+const { createHandler } = require("graphql-http/lib/use/express");
+const { ruruHTML } = require("ruru/server");
+const { serveStatic } = require("ruru/static");
 const { schema, rootValue } = require("../graphql/schema");
 const { createLoaders } = require("../graphql/loaders");
 
 module.exports = function mountGraphQL(app) {
-  app.use(
+  if (process.env.NODE_ENV !== "production") {
+    // UI de testes (equivalente ao GraphiQL do express-graphql), disponível em /graphiql
+    app.use(serveStatic("/ruru-static/")); // mount at root: middleware matches on the full req.url
+    app.get("/graphiql", (req, res) => {
+      res.type("html").send(ruruHTML({ endpoint: "/graphql", staticPath: "/ruru-static/" }));
+    });
+  }
+
+  app.all(
     "/graphql",
-    graphqlHTTP((req) => ({
+    createHandler({
       schema,
       rootValue,
-      graphiql: process.env.NODE_ENV !== "production", // habilita UI de testes em /graphql
-      context: { loaders: createLoaders() }, // novo a cada requisição
-    })),
+      context: () => ({ loaders: createLoaders() }), // novo a cada requisição
+    }),
   );
 };
