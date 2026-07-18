@@ -15,8 +15,12 @@ RUN npm ci --omit=dev
 # Agora copia o restante do código da aplicação
 COPY . .
 
+# Torna o script de entrada executável
+RUN chmod +x docker-entrypoint.sh
+
 # Documenta que a aplicação escuta na porta 3000 (informativo, não abre a porta de fato)
 EXPOSE 3000
 
-# Comando que inicia a aplicação quando o container sobe
-CMD ["node", "src/server.js"]
+# Ao subir o container: primeiro verifica/popula a base de teste (idempotente,
+# não duplica dados se já estiverem presentes), depois inicia a aplicação
+CMD ["./docker-entrypoint.sh"]

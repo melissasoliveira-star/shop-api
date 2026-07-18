@@ -1,3 +1,23 @@
+/**
+ * scripts/seed-usuarios-massa.js
+ *
+ * Repovoa a tabela `usuarios` com ~250.000 registros sintéticos, restaurando
+ * o volume necessário para reproduzir o cenário de "filtro por nome" (Seq Scan
+ * em tabela grande) documentado no TCC.
+ *
+ * Insere em lotes (1.000 linhas por INSERT) para ser rápido mesmo em 250 mil
+ * linhas, e garante exatamente 3 registros contendo "Ana" no nome, preservando
+ * a característica original do cenário (poucos resultados em tabela grande).
+ *
+ * USO (de dentro do container, onde a variável de ambiente do banco já está
+ * configurada):
+ *   docker compose exec api node scripts/seed-usuarios-massa.js
+ *
+ * Se preferir rodar localmente (fora do Docker), garanta que as variáveis de
+ * ambiente de conexão com o banco (as mesmas usadas por ../src/config/db) estejam
+ * configuradas no seu shell antes de rodar `node scripts/seed-usuarios-massa.js`.
+ */
+
 const db = require("../src/config/db");
 
 const TOTAL_REGISTROS = 250_000;
@@ -65,6 +85,8 @@ const SOBRENOMES = [
 ];
 
 function nomeAleatorioSemAna() {
+  // Evita substrings "ana"/"Ana" nos nomes gerados em massa (ex.: Mariana,
+  // Juliana, Adriana), para não inflar artificialmente o resultado do filtro.
   let primeiro, sobrenome, nomeCompleto;
   do {
     primeiro =
@@ -76,6 +98,7 @@ function nomeAleatorioSemAna() {
 }
 
 async function inserirLote(linhas) {
+  // Monta um INSERT multi-linha parametrizado: (nome, email, senha) x N
   const valores = [];
   const placeholders = linhas
     .map((linha, i) => {
@@ -90,18 +113,33 @@ async function inserirLote(linhas) {
 }
 
 async function seedMassa() {
+  // Idempotência: se a tabela já tiver volume suficiente, não insere de novo.
+  // Isso evita duplicar dados toda vez que o container reiniciar.
+  const contagemAtual = await db.query("SELECT COUNT(*) FROM usuarios");
+  const totalAtual = parseInt(contagemAtual.rows[0].count, 10);
+
+  if (totalAtual >= TOTAL_REGISTROS) {
+    console.log(
+      `Tabela usuarios já possui ${totalAtual.toLocaleString("pt-BR")} registros (>= ${TOTAL_REGISTROS.toLocaleString("pt-BR")}). Seed não é necessário, pulando.`,
+    );
+    process.exit(0);
+  }
+
   console.log(
-    `Inserindo ${TOTAL_REGISTROS.toLocaleString("pt-BR")} usuários em lotes de ${TAMANHO_LOTE}...`,
+    `Tabela usuarios possui ${totalAtual.toLocaleString("pt-BR")} registros. Inserindo até ${TOTAL_REGISTROS.toLocaleString("pt-BR")}...`,
   );
 
   const inicio = Date.now();
 
-  for (let inserted = 0; inserted < TOTAL_REGISTROS; inserted += TAMANHO_LOTE) {
-    const tamanhoAtual = Math.min(TAMANHO_LOTE, TOTAL_REGISTROS - inserted);
+  const faltam = TOTAL_REGISTROS - totalAtual;
+
+  for (let inserted = 0; inserted < faltam; inserted += TAMANHO_LOTE) {
+    const tamanhoAtual = Math.min(TAMANHO_LOTE, faltam - inserted);
     const lote = [];
 
     for (let i = 0; i < tamanhoAtual; i++) {
-      const indiceGlobal = inserted + i;
+      // offset por totalAtual + timestamp garante e-mails únicos mesmo em reexecuções parciais
+      const indiceGlobal = totalAtual + inserted + i;
       const nome = nomeAleatorioSemAna();
       const email = `usuario${indiceGlobal}@teste-tcc.com`;
       const senha = "senha_teste_123"; // dado sintético, não usado para login real
@@ -117,6 +155,8 @@ async function seedMassa() {
     }
   }
 
+  // Garante exatamente 3 registros que combinam com o filtro ILIKE '%Ana%',
+  // preservando a característica original do cenário (poucos resultados).
   const registrosComAna = [
     {
       nome: "Ana Beatriz Souza",
