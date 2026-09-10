@@ -13,12 +13,9 @@ function createLoaders() {
       orderRepo.findOrdersByUsuarioIds(usuarioIds),
     ),
 
-    userLoader: new DataLoader(async (userIds) => {
-      const users = await Promise.all(
-        userIds.map((id) => userRepo.findUserById(id)),
-      );
-      return users;
-    }),
+    userLoader: new DataLoader(async (userIds) =>
+      userRepo.findUsersByIds(userIds),
+    ),
   };
 }
 

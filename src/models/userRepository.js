@@ -16,6 +16,22 @@ async function findUserById(id) {
   return result.rows[0] || null; // Retorna o primeiro resultado ou null
 }
 
+// Usada pelo DataLoader (userLoader) para agrupar buscas de múltiplos usuários em uma única query.
+async function findUsersByIds(userIds) {
+  const result = await db.query("SELECT * FROM usuarios WHERE id = ANY($1)", [
+    userIds,
+  ]);
+
+  const usersById = new Map();
+  for (const row of result.rows) {
+    usersById.set(Number(row.id), row);
+  }
+
+  // DataLoader exige retorno na mesma ordem/tamanho do array de entrada;
+  // usuários não encontrados viram null (Number() normaliza IDs vindos como string do GraphQL)
+  return userIds.map((id) => usersById.get(Number(id)) || null);
+}
+
 // Retorna um único usuário pelo e-mail, ou null se não encontrado
 async function findUserByEmail(email) {
   const result = await db.query("SELECT * FROM usuarios WHERE email = $1", [
@@ -70,6 +86,7 @@ module.exports = {
   findAllUsers,
   findUsersByNome,
   findUserById,
+  findUsersByIds,
   findUserByEmail,
   createUser,
   updateUser,
