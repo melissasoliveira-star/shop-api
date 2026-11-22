@@ -14,7 +14,7 @@ Este repositório faz parte do estudo:
 > <br>
 > Orientadora: Jamile Raquel Regazzo
 
-Ambas as abordagens foram implementadas na mesma aplicação, compartilhando o mesmo banco de dados, repositórios e lógica de negócio. Os testes de desempenho foram realizados com a ferramenta **k6**, medindo métricas como tempo de resposta (p50, p90, p95, p99), requisições por segundo e taxa de erros, em cenários equivalentes para REST e GraphQL.
+Ambas as abordagens foram implementadas na mesma aplicação, compartilhando o mesmo banco de dados, repositórios e lógica de negócio. Os testes de desempenho foram realizados com a ferramenta **k6**, medindo métricas como tempo de resposta (p50, p90, p95, p99) e requisições por segundo, em cenários equivalentes para REST e GraphQL.
 
 ---
 
